@@ -2,8 +2,12 @@ package hangTheManFromTheFoot.main;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
@@ -65,7 +69,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 	}
 	
 	private void initWindow() {
-		frame = new JFrame(TITLE);
+		initCursor();
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(this);
 		frame.pack();
@@ -75,6 +80,19 @@ public class Game extends Canvas implements Runnable, EventListener{
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.setVisible(true);
+	}
+
+	private void initCursor() {
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image cursor = toolkit.getImage("res/images/temp/cursor.png");
+		Point cursorHotSpot = new Point(0, 0);
+		Cursor customCursor = toolkit.createCustomCursor(cursor, cursorHotSpot, "cursor");
+		
+		frame = new JFrame(TITLE);
+		
+		if(cursor != null) {
+			frame.setCursor(customCursor);
+		}
 	}
 	
 	@Override
