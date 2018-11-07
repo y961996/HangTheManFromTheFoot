@@ -19,6 +19,7 @@ import hangTheManFromTheFoot.entity.KeyboardKey;
 import hangTheManFromTheFoot.events.Event;
 import hangTheManFromTheFoot.events.EventDispatcher;
 import hangTheManFromTheFoot.events.EventListener;
+import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
 import hangTheManFromTheFoot.input.MouseInput;
@@ -37,6 +38,7 @@ public class GameScene extends Scene implements EventListener{
 	private Random random = new Random();
 	
 	private KeyboardKey[] keyboardKeys;
+	private boolean secretKeyCheck[];
 
 	public GameScene(Game game, SceneController sceneController) {
 		super(game, sceneController);
@@ -45,21 +47,15 @@ public class GameScene extends Scene implements EventListener{
 		readFromTextFile("res/words.txt");
 		letterPlaceholder = StaticResourceLoader.letterPlaceHolder;
 		secretWord = getSecretWord();
+		secretKeyCheck = new boolean[secretWord.length()];
 		secretWordCreated = true;
 		
 		keyboardKeys = new KeyboardKey[26];
 		initKeyboardKeys();
 	}
 	
-	int tempTime = 0;
 	@Override
 	public void update() {
-		tempTime++;
-		if(tempTime > 150) {
-			secretWord = getSecretWord();
-			tempTime = 0;
-		}
-		
 		for(int i = 0; i < keyboardKeys.length; i++) {
 			keyboardKeys[i].update();
 		}
@@ -72,12 +68,12 @@ public class GameScene extends Scene implements EventListener{
 		if(secretWordCreated) {
 			g.setColor(Color.CYAN);
 			g.setFont(new Font("Verdana", Font.BOLD, 32));
-			g.drawString(secretWord, 200, 350);
+			g.drawString(secretWord, 200, 100);
 			
 			g.setColor(Color.BLACK);
 			for(int j = 0; j < secretWord.length(); j++) {
-				g.drawImage(letterPlaceholder, 100 * (j + 1), 500, 64, 8, null);
-				g.drawString(String.valueOf(secretWord.charAt(j)), 100 * (j + 1) + 20, 500);
+				g.drawImage(letterPlaceholder, 100 * (j + 1), 400, 64, 8, null);
+				if(secretKeyCheck[j]) g.drawString(String.valueOf(secretWord.charAt(j)), 100 * (j + 1) + 20, 400);
 			}
 		}
 		
@@ -90,8 +86,16 @@ public class GameScene extends Scene implements EventListener{
 	
 	private void initKeyboardKeys() {
 		for(int i = 0; i < this.keyboardKeys.length; i++) {
-			KeyboardKey tempKey = new KeyboardKey(KeyboardKey.englishAlphabetLetters[i], (i + 1) * 40, (((i + 1) % 2) + 1) * 75);
+			KeyboardKey tempKey = new KeyboardKey(KeyboardKey.englishAlphabetLetters[i], (i + 1) * 40, 500 + (i % 2) * 75);
 			this.keyboardKeys[i] = tempKey;
+		}
+	}
+	
+	private void checkLetterInsideSecretWord(String letter) {
+		if(secretWord.contains(letter)) {
+			for(int index = secretWord.indexOf(letter); index >= 0; index = secretWord.indexOf(letter, index + 1)) {
+				secretKeyCheck[index] = true;
+			}
 		}
 	}
 	
@@ -160,6 +164,7 @@ public class GameScene extends Scene implements EventListener{
 		for(int i = 0; i < keyboardKeys.length; i++) {
 			if(!keyboardKeys[i].isKeyPressed() && keyboardKeys[i].intersects(MouseInput.getX(), MouseInput.getY(), 1, 1)) {
 				keyboardKeys[i].setKeyPressed();
+				checkLetterInsideSecretWord(keyboardKeys[i].getKeyLetter());
 			}
 		}
 	}
@@ -169,6 +174,7 @@ public class GameScene extends Scene implements EventListener{
 		EventDispatcher dispatcher = new EventDispatcher(event);
 		dispatcher.dispatch(Event.Type.MOUSE_PRESSED, (Event e) -> onMousePressed((MousePressedEvent) e));
 		dispatcher.dispatch(Event.Type.MOUSE_RELEASED, (Event e) -> onMouseReleased((MouseReleasedEvent) e));
+		dispatcher.dispatch(Event.Type.MOUSE_MOVED, (Event e) -> onMouseMoved((MouseMovedEvent) e));
 	}
 
 	public boolean onMousePressed(MousePressedEvent e) {
@@ -182,6 +188,17 @@ public class GameScene extends Scene implements EventListener{
 	public boolean onMouseReleased(MouseReleasedEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			return true;
+		}
+		return false;
+	}
+	
+	public boolean onMouseMoved(MouseMovedEvent e) {
+		for(int i = 0; i < keyboardKeys.length; i++) {
+			if(keyboardKeys[i].intersects(MouseInput.getX(), MouseInput.getY(), 1, 1)) {
+				keyboardKeys[i].updateBackgroundColor();
+			}else {
+				keyboardKeys[i].backToOriginalColor();
+			}
 		}
 		return false;
 	}

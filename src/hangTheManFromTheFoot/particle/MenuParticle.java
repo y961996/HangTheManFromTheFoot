@@ -2,17 +2,21 @@ package hangTheManFromTheFoot.particle;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
-import hangTheManFromTheFoot.input.MouseInput;
+import hangTheManFromTheFoot.main.Game;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
-public class MouseParticle extends Particle{
+public class MenuParticle extends Particle{
+
+	private static Random random = new Random();
 
 	private BufferedImage image;
 	
-	public MouseParticle(float width, float height, float lifeTime) {
-		super(MouseInput.getX(), MouseInput.getY(), width, height, lifeTime, true);
+	public MenuParticle(float width, float height, float lifeTime) {
+		super(random.nextFloat() * Game.WIDTH, random.nextFloat() * Game.HEIGHT, width, height, lifeTime, true);
 		image = StaticResourceLoader.starParticle;
+		setVelocities(random.nextFloat() * 2 - 1, random.nextFloat() * 2 -1);
 	}
 
 	@Override
@@ -33,4 +37,5 @@ public class MouseParticle extends Particle{
 		this.velY = velY;
 	}
 
+	
 }

@@ -28,7 +28,7 @@ public abstract class Particle {
 	
 	public abstract void render(Graphics g);
 	
-	public abstract void setVelocities();
+	public abstract void setVelocities(float x, float y);
 
 	protected float getX() {
 		return x;

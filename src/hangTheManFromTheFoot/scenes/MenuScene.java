@@ -5,15 +5,15 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 import hangTheManFromTheFoot.events.Event;
 import hangTheManFromTheFoot.events.EventDispatcher;
+import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
 import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.main.Game;
-import hangTheManFromTheFoot.particle.MouseParticle;
+import hangTheManFromTheFoot.particle.MenuParticle;
 import hangTheManFromTheFoot.particle.ParticleController;
 import hangTheManFromTheFoot.ui.HangmanButton;
 import hangTheManFromTheFoot.ui.UIManager;
@@ -25,6 +25,8 @@ public class MenuScene extends Scene{
 	private int mouseY;
 	private Rectangle mouseRect;
 	private float alpha = 1.0f;
+	
+	private int particleMakerTimer = 0;
 	
 	private BufferedImage menuItemBackgroundImage;
 
@@ -113,14 +115,25 @@ public class MenuScene extends Scene{
 		
 		enterFadeInUpdate();
 		
+		particleMakerTimer++;
+		if(particleMakerTimer > 10) {
+			particleMakerTimer = 0;
+			initAndAddParticle();
+		}
+		
 		particleController.update();
 	}
 	
 	@Override
 	public void render(Graphics g) {
-		uiManager.render(g);
 		enterFadeInRender(g);
 		particleController.render(g);
+
+		uiManager.render(g);
+	}
+	
+	private void initAndAddParticle() {
+		particleController.addParticle(new MenuParticle(32, 32, 300));
 	}
 	
 	private void enterFadeInRender(Graphics g) {
@@ -141,15 +154,10 @@ public class MenuScene extends Scene{
 		EventDispatcher dispatcher = new EventDispatcher(event);
 		dispatcher.dispatch(Event.Type.MOUSE_PRESSED, (Event e) -> onMousePressed((MousePressedEvent) e));
 		dispatcher.dispatch(Event.Type.MOUSE_RELEASED, (Event e) -> onMouseReleased((MouseReleasedEvent) e));
+		dispatcher.dispatch(Event.Type.MOUSE_MOVED, (Event e) -> onMouseMoved((MouseMovedEvent) e));
 	}
 
 	public boolean onMousePressed(MousePressedEvent e) {
-		for(int i = 0; i < 30; i++) {
-			Random random = new Random();
-			int tempX = random.nextInt(10) - 5;
-			int tempY = random.nextInt(10) - 5;
-			particleController.addParticle(new MouseParticle(32 + tempX, 32 + tempY, 300));
-		}
 		if(playButton.checkCollision(mouseRect)) {
 			if(e.getButton() == MouseEvent.BUTTON1) {
 				sceneController.setScene(game.getGameSceneIndex());
@@ -170,6 +178,11 @@ public class MenuScene extends Scene{
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean onMouseMoved(MouseMovedEvent e) {
+		if(particleController.getParticleArraySize() < 100) initAndAddParticle();
 		return false;
 	}
 }

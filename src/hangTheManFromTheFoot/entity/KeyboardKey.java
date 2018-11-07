@@ -1,5 +1,6 @@
 package hangTheManFromTheFoot.entity;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -17,6 +18,8 @@ public class KeyboardKey{
 	private String keyLetter;
 	private boolean keyPressed;
 	private boolean width_height_updated;
+	private int backgroundColorHex;
+	private Color backgroundColor;
 	
 	private Rectangle boundries;
 	private BufferedImage keyImage;
@@ -35,6 +38,9 @@ public class KeyboardKey{
 		
 		width_height_updated = false;
 		keyPressed = false;
+		
+		backgroundColorHex = 0x0000ff;
+		backgroundColor = new Color(backgroundColorHex);
 	}
 	
 	public KeyboardKey(String keyLetter, int x, int y, int width, int height) {
@@ -47,6 +53,9 @@ public class KeyboardKey{
 		
 		keyImage = StaticResourceLoader.keyImage;
 		keyPressedImage = StaticResourceLoader.keyPressedImage;
+		
+		backgroundColorHex = 0x0000ff;
+		backgroundColor = new Color(backgroundColorHex);
 	}
 	
 	public void update() {
@@ -58,12 +67,18 @@ public class KeyboardKey{
 	}
 	
 	public void render(Graphics g) {
+		if(!keyPressed) {
+			g.setColor(backgroundColor);
+			g.fillRect(x + 10, y + 10, width - 20, height - 20);
+		}
 		if(keyPressed) {
 			g.drawImage(keyPressedImage, x, y, width, height, null);
 		}else {
 			g.drawImage(keyImage, x, y, width, height, null);
 		}
-		g.drawString(keyLetter, x + 18, y + 40);
+		g.setColor(Color.BLACK);
+		if(keyLetter.equals("W")) g.drawString(keyLetter, x + 12, y + 40);
+		else g.drawString(keyLetter, x + 18, y + 40);
 	}
 
 	public boolean intersects(int x, int y, int width, int height) {
@@ -72,6 +87,16 @@ public class KeyboardKey{
 			return true;
 		}
 		return false;
+	}
+	
+	public void updateBackgroundColor() {
+		backgroundColorHex += 0x00ff00;
+		backgroundColor = new Color(backgroundColorHex);
+	}
+	
+	public void backToOriginalColor() {
+		backgroundColorHex -= 0x00ff00;
+		backgroundColor = new Color(backgroundColorHex);
 	}
 	
 	public String getKeyLetter() {
