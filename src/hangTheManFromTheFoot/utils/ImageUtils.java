@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class ImageLoader {
+public class ImageUtils {
 
 	private BufferedImage image;
 
@@ -20,6 +20,4 @@ public class ImageLoader {
 		}
 		return image;
 	}
-	
-	
 }

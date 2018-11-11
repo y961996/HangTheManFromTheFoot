@@ -13,10 +13,11 @@ import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
 import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.main.Game;
-import hangTheManFromTheFoot.particle.MenuParticle;
+import hangTheManFromTheFoot.particle.MouseParticle;
 import hangTheManFromTheFoot.particle.ParticleController;
 import hangTheManFromTheFoot.ui.HangmanButton;
 import hangTheManFromTheFoot.ui.UIManager;
+import hangTheManFromTheFoot.utils.Animation;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
 public class MenuScene extends Scene{
@@ -26,10 +27,13 @@ public class MenuScene extends Scene{
 	private Rectangle mouseRect;
 	private float alpha = 1.0f;
 	
-	private int particleMakerTimer = 0;
-	
 	private BufferedImage menuItemBackgroundImage;
-
+	private BufferedImage menuSceneBackground;
+	private BufferedImage hangmanText;
+	private BufferedImage[] sparkleImages;
+	
+	private Animation sparkleAnimation;
+		
 	private ParticleController particleController;
 	private UIManager uiManager;
 	
@@ -41,6 +45,14 @@ public class MenuScene extends Scene{
 		super(game, sceneController);
 		
 		menuItemBackgroundImage = StaticResourceLoader.menuItemBackground;
+		menuSceneBackground = StaticResourceLoader.menuSceneBackground;
+		hangmanText = StaticResourceLoader.hangmanText;
+		sparkleImages = StaticResourceLoader.sparkleImages;
+		
+		sparkleAnimation = new Animation();
+		sparkleAnimation.setFrames(sparkleImages);
+		sparkleAnimation.setDelayBetweenFrames(75);
+			
 		mouseRect = new Rectangle(0, 0, 1, 1);
 		
 		uiManager = new UIManager();
@@ -110,16 +122,12 @@ public class MenuScene extends Scene{
 	public void update() {
 		uiManager.update();
 		
+		sparkleAnimation.update();
+		
 		updateMousePosition();
 		checkButtonCollision();
 		
 		enterFadeInUpdate();
-		
-		particleMakerTimer++;
-		if(particleMakerTimer > 10) {
-			particleMakerTimer = 0;
-			initAndAddParticle();
-		}
 		
 		particleController.update();
 	}
@@ -127,13 +135,23 @@ public class MenuScene extends Scene{
 	@Override
 	public void render(Graphics g) {
 		enterFadeInRender(g);
+		
+		// Background
+		g.drawImage(menuSceneBackground, 0, 0, Game.WIDTH, Game.HEIGHT, null);
+		
+		g.drawImage(sparkleAnimation.getCurrentImage(), Game.WIDTH - 250, 0, null);
+		g.drawImage(hangmanText, 250, 435, null);
+		g.drawImage(sparkleAnimation.getCurrentImage(), 300, 350, 128, 128, null);
+		g.drawImage(sparkleAnimation.getCurrentImage(), 700, 460, 64, 64, null);
+		g.drawImage(sparkleAnimation.getCurrentImage(), 1150, 480, 64, 64, null);
+		
 		particleController.render(g);
 
 		uiManager.render(g);
 	}
 	
-	private void initAndAddParticle() {
-		particleController.addParticle(new MenuParticle(32, 32, 300));
+	private void makeParticle() {
+		particleController.addParticle(new MouseParticle(32, 32, 5));
 	}
 	
 	private void enterFadeInRender(Graphics g) {
@@ -182,7 +200,7 @@ public class MenuScene extends Scene{
 	}
 	
 	public boolean onMouseMoved(MouseMovedEvent e) {
-		if(particleController.getParticleArraySize() < 100) initAndAddParticle();
+		makeParticle();
 		return false;
 	}
 }

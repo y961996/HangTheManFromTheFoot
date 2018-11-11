@@ -34,8 +34,10 @@ public class GameScene extends Scene implements EventListener{
 	private boolean secretWordCreated = false;
 	
 	private Map<String, ArrayList<String>> words;
-	private BufferedImage letterPlaceholder;
 	private Random random = new Random();
+	
+	private BufferedImage letterPlaceholder;
+	private BufferedImage gameSceneBackground;
 	
 	private KeyboardKey[] keyboardKeys;
 	private boolean secretKeyCheck[];
@@ -45,10 +47,12 @@ public class GameScene extends Scene implements EventListener{
 		
 		words = new HashMap<String, ArrayList<String>>();
 		readFromTextFile("res/words.txt");
-		letterPlaceholder = StaticResourceLoader.letterPlaceHolder;
 		secretWord = getSecretWord();
 		secretKeyCheck = new boolean[secretWord.length()];
 		secretWordCreated = true;
+		
+		letterPlaceholder = StaticResourceLoader.letterPlaceHolder;
+		gameSceneBackground = StaticResourceLoader.gameSceneBackground;
 		
 		keyboardKeys = new KeyboardKey[26];
 		initKeyboardKeys();
@@ -86,7 +90,7 @@ public class GameScene extends Scene implements EventListener{
 	
 	private void initKeyboardKeys() {
 		for(int i = 0; i < this.keyboardKeys.length; i++) {
-			KeyboardKey tempKey = new KeyboardKey(KeyboardKey.englishAlphabetLetters[i], (i + 1) * 40, 500 + (i % 2) * 75);
+			KeyboardKey tempKey = new KeyboardKey(KeyboardKey.englishAlphabetLetters[i], (i + 1) * 40, 550 + (i % 2) * 75);
 			this.keyboardKeys[i] = tempKey;
 		}
 	}
