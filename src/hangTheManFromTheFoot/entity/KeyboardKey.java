@@ -72,6 +72,8 @@ public class KeyboardKey{
 			g.fillRect(x + 10, y + 10, width - 20, height - 20);
 		}
 		if(keyPressed) {
+			g.setColor(Color.LIGHT_GRAY);
+			g.fillRect(x + 10, y + 10, width - 20, height - 20);
 			g.drawImage(keyPressedImage, x, y, width, height, null);
 		}else {
 			g.drawImage(keyImage, x, y, width, height, null);
@@ -95,7 +97,7 @@ public class KeyboardKey{
 	}
 	
 	public void backToOriginalColor() {
-		backgroundColorHex -= 0x00ff00;
+		backgroundColorHex = 0x0000ff;
 		backgroundColor = new Color(backgroundColorHex);
 	}
 	

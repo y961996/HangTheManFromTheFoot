@@ -16,6 +16,7 @@ import hangTheManFromTheFoot.main.Game;
 import hangTheManFromTheFoot.particle.MouseParticle;
 import hangTheManFromTheFoot.particle.ParticleController;
 import hangTheManFromTheFoot.ui.HangmanButton;
+import hangTheManFromTheFoot.ui.HangmanYesNoQuestionBox;
 import hangTheManFromTheFoot.ui.UIManager;
 import hangTheManFromTheFoot.utils.Animation;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
@@ -40,6 +41,8 @@ public class MenuScene extends Scene{
 	private HangmanButton playButton;
 	private HangmanButton optionsButton;
 	private HangmanButton exitButton;
+	
+	//private HangmanYesNoQuestionBox yesNoBox;
 	
 	public MenuScene(Game game, SceneController sceneController) {
 		super(game, sceneController);
@@ -66,9 +69,12 @@ public class MenuScene extends Scene{
 		exitButton = new HangmanButton(0, 300, menuItemBackgroundImage.getWidth(), menuItemBackgroundImage.getHeight(), menuItemBackgroundImage, true);
 		exitButton.setButtonText("EXIT");
 		
+		//yesNoBox = new HangmanYesNoQuestionBox(300, 300);
+		
 		uiManager.addComponent(playButton);
 		uiManager.addComponent(optionsButton);
 		uiManager.addComponent(exitButton);
+		//uiManager.addComponent(yesNoBox);
 		
 		particleController = new ParticleController();
 	}
@@ -185,7 +191,9 @@ public class MenuScene extends Scene{
 
 		if(exitButton.checkCollision(mouseRect)) {
 			if(e.getButton() == MouseEvent.BUTTON1) {
-				System.exit(0);
+				HangmanYesNoQuestionBox yesNoBox = new HangmanYesNoQuestionBox(500, 300);
+				uiManager.addComponent(yesNoBox);
+				//System.exit(0);
 				return true;
 			}
 		}

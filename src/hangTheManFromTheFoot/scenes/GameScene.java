@@ -18,7 +18,6 @@ import java.util.Set;
 import hangTheManFromTheFoot.entity.KeyboardKey;
 import hangTheManFromTheFoot.events.Event;
 import hangTheManFromTheFoot.events.EventDispatcher;
-import hangTheManFromTheFoot.events.EventListener;
 import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
@@ -26,12 +25,14 @@ import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.main.Game;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
-public class GameScene extends Scene implements EventListener{
+public class GameScene extends Scene{
 
+	private int numberAttemptsLeft;
 	private float alpha = 1.0f;
 	private String secretWord;
 	private boolean bufferClosed = false;
 	private boolean secretWordCreated = false;
+	private boolean gameOver = false;
 	
 	private Map<String, ArrayList<String>> words;
 	private Random random = new Random();
@@ -45,6 +46,7 @@ public class GameScene extends Scene implements EventListener{
 	public GameScene(Game game, SceneController sceneController) {
 		super(game, sceneController);
 		
+		numberAttemptsLeft = 5;
 		words = new HashMap<String, ArrayList<String>>();
 		readFromTextFile("res/words.txt");
 		secretWord = getSecretWord();
@@ -69,6 +71,15 @@ public class GameScene extends Scene implements EventListener{
 
 	@Override
 	public void render(Graphics g) {
+		// Background
+		g.drawImage(gameSceneBackground, 0, 0, Game.WIDTH, Game.HEIGHT, null);
+		
+		if(gameOver) {
+			g.setColor(Color.RED.brighter());
+			g.setFont(new Font("Verdana", Font.BOLD, 72));
+			g.drawString("GAME OVER", 350, 300);
+		}
+		
 		if(secretWordCreated) {
 			g.setColor(Color.CYAN);
 			g.setFont(new Font("Verdana", Font.BOLD, 32));
@@ -95,12 +106,14 @@ public class GameScene extends Scene implements EventListener{
 		}
 	}
 	
-	private void checkLetterInsideSecretWord(String letter) {
+	private boolean checkLetterInsideSecretWord(String letter) {
 		if(secretWord.contains(letter)) {
 			for(int index = secretWord.indexOf(letter); index >= 0; index = secretWord.indexOf(letter, index + 1)) {
 				secretKeyCheck[index] = true;
 			}
+			return true;
 		}
+		return false;
 	}
 	
 	public String getSecretWord() {
@@ -168,7 +181,9 @@ public class GameScene extends Scene implements EventListener{
 		for(int i = 0; i < keyboardKeys.length; i++) {
 			if(!keyboardKeys[i].isKeyPressed() && keyboardKeys[i].intersects(MouseInput.getX(), MouseInput.getY(), 1, 1)) {
 				keyboardKeys[i].setKeyPressed();
-				checkLetterInsideSecretWord(keyboardKeys[i].getKeyLetter());
+				boolean found = checkLetterInsideSecretWord(keyboardKeys[i].getKeyLetter());
+				if(!found) numberAttemptsLeft--;
+				if(numberAttemptsLeft == 0) gameOver = true;
 			}
 		}
 	}
@@ -183,7 +198,9 @@ public class GameScene extends Scene implements EventListener{
 
 	public boolean onMousePressed(MousePressedEvent e) {
 		if(e.getButton() == MouseEvent.BUTTON1) {
-			checkIfKeyPressed();
+			if(!gameOver) {
+				checkIfKeyPressed();
+			}
 			return true;
 		}
 		return false;
