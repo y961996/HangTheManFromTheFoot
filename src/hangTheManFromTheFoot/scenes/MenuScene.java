@@ -41,6 +41,7 @@ public class MenuScene extends Scene{
 	private HangmanButton playButton;
 	private HangmanButton optionsButton;
 	private HangmanButton exitButton;
+	private HangmanYesNoQuestionBox yesNoBox;
 	
 	//private HangmanYesNoQuestionBox yesNoBox;
 	
@@ -91,11 +92,13 @@ public class MenuScene extends Scene{
 		if(playButton.checkCollision(mouseRect)) {
 			if(playButton.getWidth() < menuItemBackgroundImage.getWidth() + 100) {
 				playButton.setWidth(playButton.getWidth() + 5);
+				playButton.setTextX(playButton.getWidth() / 2 + 5);
 			}
 		}
 		else {
 			if(playButton.getWidth() > menuItemBackgroundImage.getWidth() + 50) {
 				playButton.setWidth(playButton.getWidth() - 5);
+				playButton.setTextX(playButton.getWidth() / 2 - 5);
 			}
 		}
 				
@@ -103,11 +106,13 @@ public class MenuScene extends Scene{
 		if(optionsButton.checkCollision(mouseRect)) {
 			if(optionsButton.getWidth() < menuItemBackgroundImage.getWidth() + 75) {
 				optionsButton.setWidth(optionsButton.getWidth() + 5);
+				optionsButton.setTextX(optionsButton.getWidth() / 2 + 5);
 			}
 		}
 		else {
 			if(optionsButton.getWidth() > menuItemBackgroundImage.getWidth() + 25) {
 				optionsButton.setWidth(optionsButton.getWidth() - 5);
+				optionsButton.setTextX(optionsButton.getWidth() / 2 - 5);
 			}
 		}
 				
@@ -115,11 +120,13 @@ public class MenuScene extends Scene{
 		if(exitButton.checkCollision(mouseRect)) {
 			if(exitButton.getWidth() < menuItemBackgroundImage.getWidth() + 50) {
 				exitButton.setWidth(exitButton.getWidth() + 5);
+				exitButton.setTextX(exitButton.getWidth() / 2 + 5);
 			}
 		}
 		else {
 			if(exitButton.getWidth() > menuItemBackgroundImage.getWidth()) {
 				exitButton.setWidth(exitButton.getWidth() - 5);
+				exitButton.setTextX(exitButton.getWidth() / 2 - 5);
 			}
 		}
 	}
@@ -175,10 +182,14 @@ public class MenuScene extends Scene{
 
 	@Override
 	public void onEvent(Event event) {
+		if(yesNoBox != null) {
+			yesNoBox.onEvent(event);
+		}
 		EventDispatcher dispatcher = new EventDispatcher(event);
 		dispatcher.dispatch(Event.Type.MOUSE_PRESSED, (Event e) -> onMousePressed((MousePressedEvent) e));
 		dispatcher.dispatch(Event.Type.MOUSE_RELEASED, (Event e) -> onMouseReleased((MouseReleasedEvent) e));
 		dispatcher.dispatch(Event.Type.MOUSE_MOVED, (Event e) -> onMouseMoved((MouseMovedEvent) e));
+		
 	}
 
 	public boolean onMousePressed(MousePressedEvent e) {
@@ -190,13 +201,25 @@ public class MenuScene extends Scene{
 		}
 
 		if(exitButton.checkCollision(mouseRect)) {
-			if(e.getButton() == MouseEvent.BUTTON1) {
-				HangmanYesNoQuestionBox yesNoBox = new HangmanYesNoQuestionBox(500, 300);
+			if(e.getButton() == MouseEvent.BUTTON1 && yesNoBox == null) {
+				yesNoBox = new HangmanYesNoQuestionBox(500, 300);
 				uiManager.addComponent(yesNoBox);
 				//System.exit(0);
 				return true;
 			}
 		}
+		
+		if(yesNoBox != null) {
+			if(yesNoBox.yesPressed()) {
+				System.exit(0);
+			}
+			
+			if(yesNoBox.noPressed()) {
+				uiManager.removeComponent(yesNoBox);
+				yesNoBox = null;
+			}
+		}
+		
 		return false;
 	}
 	

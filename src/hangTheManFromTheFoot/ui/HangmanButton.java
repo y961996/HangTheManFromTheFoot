@@ -12,6 +12,8 @@ public class HangmanButton extends UIComponent{
 	private int y;
 	private int width;
 	private int height;
+	private int textX;
+	private int textY;
 	private boolean hasText;
 	
 	private String buttonText;
@@ -35,6 +37,8 @@ public class HangmanButton extends UIComponent{
 			textColor = Color.WHITE;
 			textFont = new Font("Verdana", Font.BOLD, 24);
 		}
+		this.textX = x + width / 2;
+		this.textY = y + height / 2;
 	}
 	
 	public HangmanButton(int xPos, int yPos, BufferedImage buttonImage, boolean hasText) {
@@ -50,6 +54,8 @@ public class HangmanButton extends UIComponent{
 			textColor = Color.WHITE;
 			textFont = new Font("Verdana", Font.BOLD, 24);
 		}
+		this.textX = x + width / 2;
+		this.textY = y + height / 2;
 	}
 	
 	public HangmanButton(int xPos, int yPos, int width, int height, Color color, boolean hasText) {
@@ -65,6 +71,8 @@ public class HangmanButton extends UIComponent{
 			textColor = Color.WHITE;
 			textFont = new Font("Verdana", Font.BOLD, 24);
 		}
+		this.textX = x + width / 2;
+		this.textY = y + height / 2;
 	}
 	
 	public boolean checkCollision(Rectangle rectangle) {
@@ -87,7 +95,7 @@ public class HangmanButton extends UIComponent{
 		if(hasText) {
 			g.setColor(textColor);
 			g.setFont(textFont);
-			g.drawString(buttonText, x + width / 2, y + height / 2);
+			g.drawString(buttonText, textX, textY);
 		}
 	}
 
@@ -137,5 +145,65 @@ public class HangmanButton extends UIComponent{
 	
 	public void setTextFont(Font font) {
 		this.textFont = font;
+	}
+
+	public int getTextX() {
+		return textX;
+	}
+
+	public void setTextX(int textX) {
+		this.textX = textX;
+	}
+
+	public int getTextY() {
+		return textY;
+	}
+
+	public void setTextY(int textY) {
+		this.textY = textY;
+	}
+
+	public boolean isHasText() {
+		return hasText;
+	}
+
+	public void setHasText(boolean hasText) {
+		this.hasText = hasText;
+	}
+
+	public BufferedImage getButtonImage() {
+		return buttonImage;
+	}
+
+	public void setButtonImage(BufferedImage buttonImage) {
+		this.buttonImage = buttonImage;
+	}
+
+	public Rectangle getCollisionBox() {
+		return collisionBox;
+	}
+
+	public void setCollisionBox(Rectangle collisionBox) {
+		this.collisionBox = collisionBox;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public String getButtonText() {
+		return buttonText;
+	}
+
+	public Font getTextFont() {
+		return textFont;
+	}
+
+	public Color getTextColor() {
+		return textColor;
 	}
 }

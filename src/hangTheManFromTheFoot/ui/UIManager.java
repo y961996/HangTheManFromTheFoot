@@ -12,6 +12,10 @@ public class UIManager {
 		components.add(component);
 	}
 	
+	public void removeComponent(UIComponent component) {
+		components.remove(component);
+	}
+	
 	public void update() {
 		for(int i = 0; i < components.size(); i++) {
 			components.get(i).update();

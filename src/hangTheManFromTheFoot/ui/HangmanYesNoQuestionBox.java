@@ -18,7 +18,9 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 	private int x;
 	private int y;
 	private int width = 300;
-	private int height = 50;
+	private int height = 75;
+	private boolean yesPressed = false;
+	private boolean noPressed = false;
 	private HangmanButton yesButton;
 	private HangmanButton noButton;
 	private BufferedImage buttonImage;
@@ -31,7 +33,11 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 		buttonImage = StaticResourceLoader.menuItemBackground;
 		yesButton = new HangmanButton(this.x + 20, this.y + 20, 100, 40, buttonImage, true);
 		yesButton.setButtonText("YES");
-		noButton = new HangmanButton(this.x + 160, this.y + 20, 100, 40, buttonImage, true);
+		yesButton.setTextX(yesButton.getX() + yesButton.getWidth() / 4);
+		yesButton.setTextY(yesButton.getY() + yesButton.getHeight() / 2 + 10);
+		noButton = new HangmanButton(this.x + 170, this.y + 20, 100, 40, buttonImage, true);
+		noButton.setTextX(noButton.getX() + noButton.getWidth() / 4);
+		noButton.setTextY(noButton.getY() + noButton.getHeight() / 2 + 10);
 		noButton.setButtonText("NO");
 		
 		uiManager = new UIManager();
@@ -60,7 +66,9 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 
 	public boolean onMousePressed(MousePressedEvent e) {
 		if(yesButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
-			System.out.println("YES");
+			yesPressed = true;
+		}else if(noButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+			noPressed = true;
 		}
 		return false;
 	}
@@ -71,5 +79,13 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 	
 	public boolean onMouseMoved(MouseMovedEvent e) {
 		return false;
+	}
+	
+	public boolean yesPressed() {
+		return yesPressed;
+	}
+	
+	public boolean noPressed() {
+		return noPressed;
 	}
 }
