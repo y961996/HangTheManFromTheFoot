@@ -3,6 +3,7 @@ package hangTheManFromTheFoot.scenes;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -15,6 +16,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import com.sun.media.jfxmedia.events.PlayerTimeListener;
+
 import hangTheManFromTheFoot.entity.KeyboardKey;
 import hangTheManFromTheFoot.events.Event;
 import hangTheManFromTheFoot.events.EventDispatcher;
@@ -23,22 +26,31 @@ import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
 import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.main.Game;
+import hangTheManFromTheFoot.ui.HangmanButton;
+import hangTheManFromTheFoot.ui.UIManager;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
 public class GameScene extends Scene{
 
 	private int numberAttemptsLeft;
+	private int letterNeedsToBeFound;
 	private float alpha = 1.0f;
 	private String secretWord;
 	private boolean bufferClosed = false;
 	private boolean secretWordCreated = false;
 	private boolean gameOver = false;
+	private boolean gameFinished = false;
 	
 	private Map<String, ArrayList<String>> words;
 	private Random random = new Random();
 	
 	private BufferedImage letterPlaceholder;
 	private BufferedImage gameSceneBackground;
+	private BufferedImage buttonImage;
+	
+	private UIManager uiManager;
+	private HangmanButton playAgainButton;
+	private HangmanButton goToMenuButton;
 	
 	private KeyboardKey[] keyboardKeys;
 	private boolean secretKeyCheck[];
@@ -50,11 +62,15 @@ public class GameScene extends Scene{
 		words = new HashMap<String, ArrayList<String>>();
 		readFromTextFile("res/words.txt");
 		secretWord = getSecretWord();
+		letterNeedsToBeFound = secretWord.length();
 		secretKeyCheck = new boolean[secretWord.length()];
 		secretWordCreated = true;
 		
+		uiManager = new UIManager();
+		
 		letterPlaceholder = StaticResourceLoader.letterPlaceHolder;
 		gameSceneBackground = StaticResourceLoader.gameSceneBackground;
+		buttonImage = StaticResourceLoader.menuItemBackground;
 		
 		keyboardKeys = new KeyboardKey[26];
 		initKeyboardKeys();
@@ -65,7 +81,7 @@ public class GameScene extends Scene{
 		for(int i = 0; i < keyboardKeys.length; i++) {
 			keyboardKeys[i].update();
 		}
-		
+		uiManager.update();
 		enterFadeInUpdate();
 	}
 
@@ -73,18 +89,19 @@ public class GameScene extends Scene{
 	public void render(Graphics g) {
 		// Background
 		g.drawImage(gameSceneBackground, 0, 0, Game.WIDTH, Game.HEIGHT, null);
-		
+		uiManager.render(g);
 		if(gameOver) {
 			g.setColor(Color.RED.brighter());
 			g.setFont(new Font("Verdana", Font.BOLD, 72));
-			g.drawString("GAME OVER", 350, 300);
+			g.drawString("GAME OVER", 370, 300);
+		}else if(gameFinished) {
+			g.setColor(Color.GREEN.brighter());
+			g.setFont(new Font("Verdana", Font.BOLD, 72));
+			g.drawString("YOU WON", 420, 300);
 		}
 		
+		g.setFont(new Font("Verdana", Font.BOLD, 32));
 		if(secretWordCreated) {
-			g.setColor(Color.CYAN);
-			g.setFont(new Font("Verdana", Font.BOLD, 32));
-			g.drawString(secretWord, 200, 100);
-			
 			g.setColor(Color.BLACK);
 			for(int j = 0; j < secretWord.length(); j++) {
 				g.drawImage(letterPlaceholder, 100 * (j + 1), 400, 64, 8, null);
@@ -110,6 +127,7 @@ public class GameScene extends Scene{
 		if(secretWord.contains(letter)) {
 			for(int index = secretWord.indexOf(letter); index >= 0; index = secretWord.indexOf(letter, index + 1)) {
 				secretKeyCheck[index] = true;
+				letterNeedsToBeFound--;
 			}
 			return true;
 		}
@@ -183,9 +201,33 @@ public class GameScene extends Scene{
 				keyboardKeys[i].setKeyPressed();
 				boolean found = checkLetterInsideSecretWord(keyboardKeys[i].getKeyLetter());
 				if(!found) numberAttemptsLeft--;
-				if(numberAttemptsLeft == 0) gameOver = true;
+				if(numberAttemptsLeft == 0) {
+					secretWordCreated = false;
+					gameOver = true;
+					
+					handleButtonCreation();
+				}
+				if(letterNeedsToBeFound == 0){
+					secretWordCreated = false;
+					gameFinished = true;
+					
+					handleButtonCreation();
+				}
 			}
 		}
+	}
+	
+	private void handleButtonCreation() {
+		playAgainButton = new HangmanButton(420, 350, buttonImage.getWidth() + 50, buttonImage.getHeight(), buttonImage, true);
+		playAgainButton.setButtonText("PLAY AGAIN");
+		playAgainButton.setTextX(playAgainButton.getX() + playAgainButton.getWidth() / 3);
+		playAgainButton.setTextY(playAgainButton.getY() + playAgainButton.getHeight() / 2);
+		goToMenuButton = new HangmanButton(420, 450, buttonImage.getWidth() + 50, buttonImage.getHeight(), buttonImage, true);
+		goToMenuButton.setButtonText("GO BACK TO MENU");
+		goToMenuButton.setTextX(goToMenuButton.getX() + goToMenuButton.getWidth() / 4);
+		goToMenuButton.setTextY(goToMenuButton.getY() + goToMenuButton.getHeight() / 2);
+		uiManager.addComponent(playAgainButton);
+		uiManager.addComponent(goToMenuButton);
 	}
 	
 	@Override
@@ -200,6 +242,12 @@ public class GameScene extends Scene{
 		if(e.getButton() == MouseEvent.BUTTON1) {
 			if(!gameOver) {
 				checkIfKeyPressed();
+			}
+			if((gameOver || gameFinished) && goToMenuButton != null) {
+				if(goToMenuButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+					resetGame();
+					game.setScene(game.getMenuSceneIndex());
+				}
 			}
 			return true;
 		}
@@ -222,6 +270,21 @@ public class GameScene extends Scene{
 			}
 		}
 		return false;
+	}
+	
+	private void resetGame() {
+		gameOver = false;
+		gameFinished = false;
+		uiManager.removeComponent(playAgainButton);
+		uiManager.removeComponent(goToMenuButton);
+		playAgainButton = null;
+		goToMenuButton = null;
+		numberAttemptsLeft = 5;
+		secretWord = getSecretWord();
+		letterNeedsToBeFound = secretWord.length();
+		secretKeyCheck = new boolean[secretWord.length()];
+		secretWordCreated = true;
+		initKeyboardKeys();
 	}
 	
 	/*

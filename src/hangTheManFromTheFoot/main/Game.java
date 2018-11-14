@@ -186,4 +186,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 	public int getGameSceneIndex() {
 		return gameSceneIndex;
 	}
+	
+	public void setScene(int index) {
+		this.sceneController.setScene(index);
+	}
 }
