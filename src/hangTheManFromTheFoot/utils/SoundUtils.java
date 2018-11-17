@@ -3,11 +3,10 @@ package hangTheManFromTheFoot.utils;
 import java.io.File;
 import java.io.IOException;
 
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.Line;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -15,44 +14,26 @@ public class SoundUtils {
 	
 	private Clip clip;
 	
-	public Clip loadSound(String path) {
+	public SoundUtils(String path) {
 		try {
 			clip = AudioSystem.getClip();
-			clip.open(AudioSystem.getAudioInputStream(new File(path)));
-		}catch(LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-			e.printStackTrace();
-		}
-		return clip;
-	}
-	
-	public void playOnce(Clip clip) {
-		clip.start();
-	}
-	
-	public void playLoop(Clip clip) {
-		clip.start();
-		clip.loop(Clip.LOOP_CONTINUOUSLY);
-	}
-	
-	// Temp
-	public void playFile(File file) {
-		try {
-			final Clip clip = (Clip) AudioSystem.getLine(new Line.Info(Clip.class));
-			
-			clip.addLineListener(new LineListener() {
-				@Override
-				public void update(LineEvent event) {
-					if(event.getType() == LineEvent.Type.STOP) {
-						clip.close();
-					}
-				}
-			});
-			
-			clip.open(AudioSystem.getAudioInputStream(file));
-			clip.start();
+			AudioInputStream ais = AudioSystem.getAudioInputStream(new File(path));
+			clip.open(ais);
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public float getVolume() {
+		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		return (float) Math.pow(10f, gainControl.getValue() / 20f);
+	}
+	
+	public void setVolume(float volume) {
+		if(volume < 0f) volume = 0f;
+		if(volume > 1f) volume = 1f;
+		FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+		gainControl.setValue(20f * (float) Math.log10(volume));
 	}
 }
