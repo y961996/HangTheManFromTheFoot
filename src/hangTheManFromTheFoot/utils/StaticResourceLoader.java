@@ -8,15 +8,16 @@ public class StaticResourceLoader {
 	
 	private static ImageUtils imageUtils = new ImageUtils();
 	
-	// Images
 	public static BufferedImage menuItemBackground;
 	public static BufferedImage menuSceneBackground;
 	public static BufferedImage hangmanText;
 	public static BufferedImage sparkleSpriteSheet;
 	public static BufferedImage hangingManSpriteSheet;
+	public static BufferedImage windSpriteSheet;
 	
 	public static BufferedImage[] sparkleImages;
 	public static BufferedImage[] hangingManImages;
+	public static BufferedImage[] windImages;
 	
 	public static BufferedImage gameSceneBackground;
 	public static BufferedImage letterPlaceHolder;
@@ -25,15 +26,13 @@ public class StaticResourceLoader {
 	public static BufferedImage starParticle;
 	public static BufferedImage football;
 	
-	// Sounds
-	
 	static {
-		// Images
 		menuItemBackground = imageUtils.loadImage("/images/temp/MenuItemBackground.png");
 		menuSceneBackground = imageUtils.loadImage("/images/temp/bg/beach.png");
 		hangmanText = imageUtils.loadImage("/images/temp/Hangman.png");
 		sparkleSpriteSheet = imageUtils.loadImage("/images/temp/2d/sparkle effect/sparkle256.png");
 		hangingManSpriteSheet = imageUtils.loadImage("/images/temp/hangingManSpriteSheet.png");
+		windSpriteSheet = imageUtils.loadImage("/images/temp/wind.png");
 		
 		sparkleImages = new BufferedImage[9];
 		for(int i = 0; i < 3; i++) {
@@ -50,13 +49,18 @@ public class StaticResourceLoader {
 			}
 		}
 		
+		windImages = new BufferedImage[4];
+		for(int i = 0; i < 2; i++) {
+			for(int j = 0; j < 2; j++) {
+				windImages[i * 2 + j] = windSpriteSheet.getSubimage(j * 64, i * 64, 64, 64);
+			}
+		}
+		
 		gameSceneBackground = imageUtils.loadImage("/images/temp/bg/menubg.png");
 		letterPlaceHolder = imageUtils.loadImage("/images/temp/letterPlaceholder.png");
 		keyImage = imageUtils.loadImage("/images/temp/Tuþ.png");
 		keyPressedImage = imageUtils.loadImage("/images/temp/TuþPressed.png");
 		starParticle = imageUtils.loadImage("/images/temp/particles/particleArrow.png");
 		football = imageUtils.loadImage("/images/temp/football.png");
-		
-		// Sounds
 	}
 }

@@ -19,6 +19,7 @@ import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.scenes.GameScene;
 import hangTheManFromTheFoot.scenes.MenuScene;
 import hangTheManFromTheFoot.scenes.SceneController;
+import hangTheManFromTheFoot.utils.SoundUtils;
 
 public class Game extends Canvas implements Runnable, EventListener{
 	private static final long serialVersionUID = 1L;
@@ -40,6 +41,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 	private int menuSceneIndex;
 	private GameScene gameScene;
 	private int gameSceneIndex;
+	
+	private SoundUtils soundUtils;
 	
 	public Game() {
 		
@@ -66,6 +69,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 		addKeyListener(keyboardInput);
 		addMouseListener(mouseInput);
 		addMouseMotionListener(mouseInput);
+		
+		soundUtils = new SoundUtils("res/images/temp/sound.wav");
 	}
 	
 	private void initWindow() {

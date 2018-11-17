@@ -26,12 +26,14 @@ import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.main.Game;
 import hangTheManFromTheFoot.ui.HangmanButton;
 import hangTheManFromTheFoot.ui.UIManager;
+import hangTheManFromTheFoot.utils.Animation;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
 public class GameScene extends Scene{
 
 	private int numberAttemptsLeft;
 	private int letterNeedsToBeFound;
+	private int windX;
 	private float alpha = 1.0f;
 	private float footballImageX;
 	private float footballImageY;
@@ -51,6 +53,9 @@ public class GameScene extends Scene{
 	private BufferedImage buttonImage;
 	private BufferedImage footballImage;
 	private BufferedImage[] hangingManImages;
+	private BufferedImage[] windImages;
+
+	private Animation windAnimation;
 	
 	private UIManager uiManager;
 	private HangmanButton playAgainButton;
@@ -77,6 +82,12 @@ public class GameScene extends Scene{
 		buttonImage = StaticResourceLoader.menuItemBackground;
 		hangingManImages = StaticResourceLoader.hangingManImages;
 		footballImage = StaticResourceLoader.football;
+		windImages = StaticResourceLoader.windImages;
+		
+		windAnimation = new Animation();
+		windAnimation.setFrames(windImages);
+		windAnimation.setDelayBetweenFrames(350);
+		windX = 300;
 		
 		footballImageX = 50;
 		footballImageY = 500;
@@ -92,6 +103,9 @@ public class GameScene extends Scene{
 		for(int i = 0; i < keyboardKeys.length; i++) {
 			keyboardKeys[i].update();
 		}
+		windX += 5;
+		if(windX > 1200) windX = 300;
+		windAnimation.update();
 		uiManager.update();
 		enterFadeInUpdate();
 		updateFootball();
@@ -111,6 +125,8 @@ public class GameScene extends Scene{
 			g.setFont(new Font("Verdana", Font.BOLD, 72));
 			g.drawString("YOU WON", 420, 300);
 		}
+		
+		g.drawImage(windAnimation.getCurrentImage(), windX, 200, 256, 64, null);
 		
 		g.drawImage(footballImage, (int)footballImageX, (int)footballImageY, 64, 64, null);
 		g.drawImage(hangingManImages[(hangingManImages.length - 1) - numberAttemptsLeft], -20, 70, 512, 512, null);

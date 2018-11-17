@@ -196,6 +196,7 @@ public class MenuScene extends Scene{
 		if(playButton.checkCollision(mouseRect)) {
 			if(e.getButton() == MouseEvent.BUTTON1 && yesNoBox == null) {
 				sceneController.setScene(game.getGameSceneIndex());
+				playButton.setWidth(menuItemBackgroundImage.getWidth() + 50);
 				return true;
 			}
 		}
@@ -204,7 +205,6 @@ public class MenuScene extends Scene{
 			if(e.getButton() == MouseEvent.BUTTON1 && yesNoBox == null) {
 				yesNoBox = new HangmanYesNoQuestionBox(500, 300);
 				uiManager.addComponent(yesNoBox);
-				//System.exit(0);
 				return true;
 			}
 		}

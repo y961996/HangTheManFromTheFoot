@@ -1,5 +1,6 @@
 package hangTheManFromTheFoot.ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -52,7 +53,8 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 
 	@Override
 	public void render(Graphics g) {
-		g.fillRect(this.x, this.y, width, height);
+		g.setColor(Color.CYAN);
+		g.fillRoundRect(this.x, this.y, width, height, 20, 20);
 		uiManager.render(g);
 	}
 
