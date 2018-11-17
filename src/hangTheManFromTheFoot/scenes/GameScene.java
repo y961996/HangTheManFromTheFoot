@@ -16,8 +16,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import com.sun.media.jfxmedia.events.PlayerTimeListener;
-
 import hangTheManFromTheFoot.entity.KeyboardKey;
 import hangTheManFromTheFoot.events.Event;
 import hangTheManFromTheFoot.events.EventDispatcher;
@@ -35,6 +33,10 @@ public class GameScene extends Scene{
 	private int numberAttemptsLeft;
 	private int letterNeedsToBeFound;
 	private float alpha = 1.0f;
+	private float footballImageX;
+	private float footballImageY;
+	private float footballImageVelX;
+	private float footballImageVelY;
 	private String secretWord;
 	private boolean bufferClosed = false;
 	private boolean secretWordCreated = false;
@@ -47,6 +49,8 @@ public class GameScene extends Scene{
 	private BufferedImage letterPlaceholder;
 	private BufferedImage gameSceneBackground;
 	private BufferedImage buttonImage;
+	private BufferedImage footballImage;
+	private BufferedImage[] hangingManImages;
 	
 	private UIManager uiManager;
 	private HangmanButton playAgainButton;
@@ -58,7 +62,7 @@ public class GameScene extends Scene{
 	public GameScene(Game game, SceneController sceneController) {
 		super(game, sceneController);
 		
-		numberAttemptsLeft = 5;
+		numberAttemptsLeft = 6;
 		words = new HashMap<String, ArrayList<String>>();
 		readFromTextFile("res/words.txt");
 		secretWord = getSecretWord();
@@ -71,6 +75,13 @@ public class GameScene extends Scene{
 		letterPlaceholder = StaticResourceLoader.letterPlaceHolder;
 		gameSceneBackground = StaticResourceLoader.gameSceneBackground;
 		buttonImage = StaticResourceLoader.menuItemBackground;
+		hangingManImages = StaticResourceLoader.hangingManImages;
+		footballImage = StaticResourceLoader.football;
+		
+		footballImageX = 50;
+		footballImageY = 500;
+		footballImageVelX = 0;
+		footballImageVelY = 0;
 		
 		keyboardKeys = new KeyboardKey[26];
 		initKeyboardKeys();
@@ -83,6 +94,7 @@ public class GameScene extends Scene{
 		}
 		uiManager.update();
 		enterFadeInUpdate();
+		updateFootball();
 	}
 
 	@Override
@@ -100,12 +112,19 @@ public class GameScene extends Scene{
 			g.drawString("YOU WON", 420, 300);
 		}
 		
+		g.drawImage(footballImage, (int)footballImageX, (int)footballImageY, 64, 64, null);
+		g.drawImage(hangingManImages[(hangingManImages.length - 1) - numberAttemptsLeft], -20, 70, 512, 512, null);
+		
+		g.setColor(new Color(0x3d7f7f));
+		g.setFont(new Font("Verdana", Font.BOLD, 72));
+		g.drawString("TOPIC", 850, 150);
+		
 		g.setFont(new Font("Verdana", Font.BOLD, 32));
 		if(secretWordCreated) {
 			g.setColor(Color.BLACK);
 			for(int j = 0; j < secretWord.length(); j++) {
-				g.drawImage(letterPlaceholder, 100 * (j + 1), 400, 64, 8, null);
-				if(secretKeyCheck[j]) g.drawString(String.valueOf(secretWord.charAt(j)), 100 * (j + 1) + 20, 400);
+				g.drawImage(letterPlaceholder, 120 * (j + 1), 500, 64, 8, null);
+				if(secretKeyCheck[j]) g.drawString(String.valueOf(secretWord.charAt(j)), 120 * (j + 1) + 20, 500);
 			}
 		}
 		
@@ -114,6 +133,30 @@ public class GameScene extends Scene{
 		}
 		
 		enterFadeInRender(g);
+	}
+	
+	private void updateFootball() {
+		footballImageX += footballImageVelX;
+		footballImageY += footballImageVelY;
+		footballImageY++;						// Gravity
+		if(footballImageVelX > 0) {
+			footballImageVelX--;
+		}
+		if(footballImageVelX < 0) {
+			footballImageVelX = 0;
+		}
+		if(footballImageVelY > 0) {
+			footballImageVelY--;
+		}
+		if(footballImageVelY < 0) {
+			footballImageVelY = 0;
+		}
+		if(footballImageY > 500) {
+			footballImageY = 500;
+		}
+		if(footballImageY < 0) {
+			footballImageY = 0;
+		}
 	}
 	
 	private void initKeyboardKeys() {
@@ -249,6 +292,11 @@ public class GameScene extends Scene{
 					game.setScene(game.getMenuSceneIndex());
 				}
 			}
+			if((gameOver || gameFinished) && playAgainButton != null) {
+				if(playAgainButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+					resetGame();
+				}
+			}
 			return true;
 		}
 		return false;
@@ -279,7 +327,7 @@ public class GameScene extends Scene{
 		uiManager.removeComponent(goToMenuButton);
 		playAgainButton = null;
 		goToMenuButton = null;
-		numberAttemptsLeft = 5;
+		numberAttemptsLeft = 6;
 		secretWord = getSecretWord();
 		letterNeedsToBeFound = secretWord.length();
 		secretKeyCheck = new boolean[secretWord.length()];

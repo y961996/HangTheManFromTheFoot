@@ -39,7 +39,7 @@ public class KeyboardKey{
 		width_height_updated = false;
 		keyPressed = false;
 		
-		backgroundColorHex = 0x0000ff;
+		backgroundColorHex = 0x2b7f11;
 		backgroundColor = new Color(backgroundColorHex);
 	}
 	
@@ -54,7 +54,7 @@ public class KeyboardKey{
 		keyImage = StaticResourceLoader.keyImage;
 		keyPressedImage = StaticResourceLoader.keyPressedImage;
 		
-		backgroundColorHex = 0x0000ff;
+		backgroundColorHex = 0x2b7f11;
 		backgroundColor = new Color(backgroundColorHex);
 	}
 	
@@ -92,12 +92,12 @@ public class KeyboardKey{
 	}
 	
 	public void updateBackgroundColor() {
-		backgroundColorHex += 0x00ff00;
+		backgroundColorHex = 0x58ef37;
 		backgroundColor = new Color(backgroundColorHex);
 	}
 	
 	public void backToOriginalColor() {
-		backgroundColorHex = 0x0000ff;
+		backgroundColorHex = 0x2b7f11;
 		backgroundColor = new Color(backgroundColorHex);
 	}
 	

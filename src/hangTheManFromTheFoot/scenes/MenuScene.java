@@ -194,7 +194,7 @@ public class MenuScene extends Scene{
 
 	public boolean onMousePressed(MousePressedEvent e) {
 		if(playButton.checkCollision(mouseRect)) {
-			if(e.getButton() == MouseEvent.BUTTON1) {
+			if(e.getButton() == MouseEvent.BUTTON1 && yesNoBox == null) {
 				sceneController.setScene(game.getGameSceneIndex());
 				return true;
 			}
