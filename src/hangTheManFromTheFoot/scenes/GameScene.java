@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 
 import hangTheManFromTheFoot.entity.KeyboardKey;
+import hangTheManFromTheFoot.entity.Word;
 import hangTheManFromTheFoot.events.Event;
 import hangTheManFromTheFoot.events.EventDispatcher;
 import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
@@ -39,7 +40,7 @@ public class GameScene extends Scene{
 	private float footballImageY;
 	private float footballImageVelX;
 	private float footballImageVelY;
-	private String secretWord;
+	private Word secretWord;
 	private boolean bufferClosed = false;
 	private boolean secretWordCreated = false;
 	private boolean gameOver = false;
@@ -71,8 +72,8 @@ public class GameScene extends Scene{
 		words = new HashMap<String, ArrayList<String>>();
 		readFromTextFile("res/words.txt");
 		secretWord = getSecretWord();
-		letterNeedsToBeFound = secretWord.length();
-		secretKeyCheck = new boolean[secretWord.length()];
+		letterNeedsToBeFound = secretWord.word.length();
+		secretKeyCheck = new boolean[secretWord.word.length()];
 		secretWordCreated = true;
 		
 		uiManager = new UIManager();
@@ -133,14 +134,16 @@ public class GameScene extends Scene{
 		
 		g.setColor(new Color(0x3d7f7f));
 		g.setFont(new Font("Verdana", Font.BOLD, 72));
-		g.drawString("TOPIC", 850, 150);
+		g.drawString("TOPIC", 850, 100);
+		g.setColor(new Color(0x30a8a8));
+		g.drawString(secretWord.topic, 850, 200);
 		
 		g.setFont(new Font("Verdana", Font.BOLD, 32));
 		if(secretWordCreated) {
 			g.setColor(Color.BLACK);
-			for(int j = 0; j < secretWord.length(); j++) {
+			for(int j = 0; j < secretWord.word.length(); j++) {
 				g.drawImage(letterPlaceholder, 120 * (j + 1), 500, 64, 8, null);
-				if(secretKeyCheck[j]) g.drawString(String.valueOf(secretWord.charAt(j)), 120 * (j + 1) + 20, 500);
+				if(secretKeyCheck[j]) g.drawString(String.valueOf(secretWord.word.charAt(j)), 120 * (j + 1) + 20, 500);
 			}
 		}
 		
@@ -183,8 +186,8 @@ public class GameScene extends Scene{
 	}
 	
 	private boolean checkLetterInsideSecretWord(String letter) {
-		if(secretWord.contains(letter)) {
-			for(int index = secretWord.indexOf(letter); index >= 0; index = secretWord.indexOf(letter, index + 1)) {
+		if(secretWord.word.contains(letter)) {
+			for(int index = secretWord.word.indexOf(letter); index >= 0; index = secretWord.word.indexOf(letter, index + 1)) {
 				secretKeyCheck[index] = true;
 				letterNeedsToBeFound--;
 			}
@@ -193,7 +196,7 @@ public class GameScene extends Scene{
 		return false;
 	}
 	
-	public String getSecretWord() {
+	public Word getSecretWord() {
 		int numOfCategories = words.keySet().size();
 		int randomCategory = random.nextInt(numOfCategories);
 		Set<String> keys = words.keySet();
@@ -202,7 +205,7 @@ public class GameScene extends Scene{
 		int numOfElementsInCategory = words.get(key).size();
 		int randomElement = random.nextInt(numOfElementsInCategory);
 		System.out.println("Secret word has chosen from category: \'" + keysArray[randomCategory] + "\' and it is \"" + words.get(key).get(randomElement) + "\"");
-		return words.get(key).get(randomElement).toUpperCase();
+		return new Word( words.get(key).get(randomElement).toUpperCase(), keysArray[randomCategory]);
 	}
 	
 	private void enterFadeInRender(Graphics g) {
@@ -345,8 +348,8 @@ public class GameScene extends Scene{
 		goToMenuButton = null;
 		numberAttemptsLeft = 6;
 		secretWord = getSecretWord();
-		letterNeedsToBeFound = secretWord.length();
-		secretKeyCheck = new boolean[secretWord.length()];
+		letterNeedsToBeFound = secretWord.word.length();
+		secretKeyCheck = new boolean[secretWord.word.length()];
 		secretWordCreated = true;
 		initKeyboardKeys();
 	}

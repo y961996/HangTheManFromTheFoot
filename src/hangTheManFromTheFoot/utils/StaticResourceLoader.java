@@ -26,6 +26,8 @@ public class StaticResourceLoader {
 	public static BufferedImage starParticle;
 	public static BufferedImage football;
 	
+	public static BufferedImage optionsBg;
+	
 	static {
 		menuItemBackground = imageUtils.loadImage("/images/temp/MenuItemBackground.png");
 		menuSceneBackground = imageUtils.loadImage("/images/temp/bg/beach.png");
@@ -62,5 +64,7 @@ public class StaticResourceLoader {
 		keyPressedImage = imageUtils.loadImage("/images/temp/TuþPressed.png");
 		starParticle = imageUtils.loadImage("/images/temp/particles/particleArrow.png");
 		football = imageUtils.loadImage("/images/temp/football.png");
+		
+		optionsBg = imageUtils.loadImage("/images/temp/bg/optionsBg.jpg");
 	}
 }

@@ -18,6 +18,7 @@ import hangTheManFromTheFoot.input.KeyboardInput;
 import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.scenes.GameScene;
 import hangTheManFromTheFoot.scenes.MenuScene;
+import hangTheManFromTheFoot.scenes.OptionsScene;
 import hangTheManFromTheFoot.scenes.SceneController;
 import hangTheManFromTheFoot.utils.SoundUtils;
 
@@ -39,6 +40,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 	private SceneController sceneController;
 	private MenuScene menuScene;
 	private int menuSceneIndex;
+	private OptionsScene optionsScene;
+	private int optionsSceneIndex;
 	private GameScene gameScene;
 	private int gameSceneIndex;
 	
@@ -57,11 +60,15 @@ public class Game extends Canvas implements Runnable, EventListener{
 		menuSceneIndex = sceneController.getNumberOfScenes();
 		sceneController.addScene(menuScene);
 		
+		optionsScene = new OptionsScene(this, sceneController);
+		optionsSceneIndex = sceneController.getNumberOfScenes();
+		sceneController.addScene(optionsScene);
+		
 		gameScene = new GameScene(this, sceneController);
 		gameSceneIndex = sceneController.getNumberOfScenes();
 		sceneController.addScene(gameScene);
 		
-		sceneController.setScene(menuSceneIndex);
+		sceneController.setScene(optionsSceneIndex);
 		
 		keyboardInput = new KeyboardInput();
 		mouseInput = new MouseInput(this);
@@ -190,6 +197,10 @@ public class Game extends Canvas implements Runnable, EventListener{
 	
 	public int getGameSceneIndex() {
 		return gameSceneIndex;
+	}
+	
+	public int getOptionsSceneIndex() {
+		return optionsSceneIndex;
 	}
 	
 	public void setScene(int index) {
