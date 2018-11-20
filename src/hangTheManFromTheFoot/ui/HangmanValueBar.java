@@ -5,7 +5,12 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import hangTheManFromTheFoot.events.Event;
+import hangTheManFromTheFoot.events.EventDispatcher;
 import hangTheManFromTheFoot.events.EventListener;
+import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
+import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
+import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
+import hangTheManFromTheFoot.input.MouseInput;
 
 public class HangmanValueBar extends UIComponent implements EventListener{
 
@@ -22,25 +27,82 @@ public class HangmanValueBar extends UIComponent implements EventListener{
 		this.width = width;
 		this.height = height;
 		
-		controlBar = new Rectangle(this.x, this.y, 10, this.height);
+		controlBar = new Rectangle(this.x, this.y, 15, this.height);
 	}
 	
 	@Override
 	public void update() {
-		
+
 	}
 
 	@Override
 	public void render(Graphics g) {
 		g.setColor(Color.BLACK);
-		g.fillRoundRect(x, y, width, height, 30, 30);
+		g.fillRoundRect(x, y, width + controlBar.width, height, 30, 30);
 		g.setColor(Color.RED);
-		g.fillRoundRect(controlBar.x + 50, controlBar.y, controlBar.width, controlBar.height, 30, 30);
+		g.fillRoundRect(controlBar.x, controlBar.y, controlBar.width, controlBar.height, 30, 30);
 	}
 	
 	@Override
 	public void onEvent(Event event) {
-		
+		EventDispatcher dispatcher = new EventDispatcher(event);
+		dispatcher.dispatch(Event.Type.MOUSE_PRESSED, (Event e) -> onMousePressed((MousePressedEvent) e));
+		dispatcher.dispatch(Event.Type.MOUSE_RELEASED, (Event e) -> onMouseReleased((MouseReleasedEvent) e));
+		dispatcher.dispatch(Event.Type.MOUSE_MOVED, (Event e) -> onMouseMoved((MouseMovedEvent) e));
 	}
 
+	public boolean onMousePressed(MousePressedEvent e) {
+		return false;
+	}
+	
+	public boolean onMouseReleased(MouseReleasedEvent e) {
+		return false;
+	}
+	
+	public boolean onMouseMoved(MouseMovedEvent e) {
+		if(e.getDragged()) {
+			if(controlBar.intersects(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+				controlBar.x = MouseInput.getX() - controlBar.width / 2;
+				if(controlBar.x < this.x) controlBar.x = this.x;
+				if(controlBar.x > this.x + this.width) controlBar.x = this.x + this.width;
+			}
+		}
+		return false;
+	}
+
+	public int getControlBarX() {
+		return this.controlBar.x;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
 }

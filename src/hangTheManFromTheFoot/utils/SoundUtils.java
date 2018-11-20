@@ -14,7 +14,11 @@ public class SoundUtils {
 	
 	private Clip clip;
 	
-	public SoundUtils(String path) {
+	public SoundUtils() {
+		
+	}
+	
+	public void startMusic(String path) {
 		try {
 			clip = AudioSystem.getClip();
 			AudioInputStream ais = AudioSystem.getAudioInputStream(new File(path));

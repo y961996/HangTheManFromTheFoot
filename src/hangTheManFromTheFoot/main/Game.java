@@ -77,7 +77,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 		addMouseListener(mouseInput);
 		addMouseMotionListener(mouseInput);
 		
-		soundUtils = new SoundUtils("res/images/temp/sound.wav");
+		soundUtils = new SoundUtils();
+		soundUtils.startMusic("res/images/temp/sound.wav");
 	}
 	
 	private void initWindow() {
