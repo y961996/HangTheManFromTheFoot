@@ -1,7 +1,9 @@
 package hangTheManFromTheFoot.scenes;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import hangTheManFromTheFoot.events.Event;
@@ -10,17 +12,20 @@ import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
 import hangTheManFromTheFoot.main.Game;
+import hangTheManFromTheFoot.ui.HangmanButton;
 import hangTheManFromTheFoot.ui.HangmanValueBar;
 import hangTheManFromTheFoot.ui.UIManager;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
 public class OptionsScene extends Scene{
 
+	private float volume;
+
 	private BufferedImage optionsBackgroundImage;
 	
 	private UIManager uiManager;
 	private HangmanValueBar changeVolumeBar;
-	private float volume;
+	private HangmanButton goToMenuButton;
 	
 	public OptionsScene(Game game, SceneController sceneController) {
 		super(game, sceneController);
@@ -29,22 +34,32 @@ public class OptionsScene extends Scene{
 		
 		uiManager = new UIManager();
 		
-		changeVolumeBar = new HangmanValueBar(100, 100, 320, 20);
+		changeVolumeBar = new HangmanValueBar(100, 400, 320, 20);
 		volume = (float)changeVolumeBar.getControlBarX();
 		uiManager.addComponent(changeVolumeBar);
+		goToMenuButton = new HangmanButton(50, 50, StaticResourceLoader.menuItemBackground.getWidth(), StaticResourceLoader.menuItemBackground.getHeight(), StaticResourceLoader.menuItemBackground, true);
+		goToMenuButton.setButtonText("Go Back To Menu");
+		goToMenuButton.setTextX(goToMenuButton.getX() + 60);
+		goToMenuButton.setTextY(goToMenuButton.getTextY() + 10);
+		uiManager.addComponent(goToMenuButton);
 	}
 
 	@Override
 	public void update() {
 		uiManager.update();
 		volume = ((float)changeVolumeBar.getControlBarX() - changeVolumeBar.getX()) / changeVolumeBar.getWidth();
+		game.getMenuSoundUtils().setVolume(volume);
 	}
 
 	@Override
 	public void render(Graphics g) {
 		g.drawImage(optionsBackgroundImage, 0, 0, Game.WIDTH, Game.HEIGHT, null);
+		g.setFont(new Font("Verdana", Font.BOLD, 24));
+		g.setColor(Color.BLACK.brighter());
+		g.drawString("Background Music Volume", 100, 350);
 		g.setFont(new Font("Verdana", Font.BOLD, 48));
-		g.drawString("" + volume, 200, 200);
+		g.setColor(Color.WHITE);
+		g.drawString("" + (int)(volume * 100), 450, 430);
 		uiManager.render(g);
 	}
 	
@@ -58,6 +73,11 @@ public class OptionsScene extends Scene{
 	}
 
 	public boolean onMousePressed(MousePressedEvent e) {
+		if(goToMenuButton.checkCollision(Game.mouseRectangle)) {
+			if(e.getButton() == MouseEvent.BUTTON1) {
+				sceneController.setScene(game.getMenuSceneIndex());
+			}
+		}
 		return false;
 	}
 	

@@ -11,6 +11,7 @@ import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
 import hangTheManFromTheFoot.input.MouseInput;
+import hangTheManFromTheFoot.main.Game;
 
 public class HangmanValueBar extends UIComponent implements EventListener{
 
@@ -27,7 +28,7 @@ public class HangmanValueBar extends UIComponent implements EventListener{
 		this.width = width;
 		this.height = height;
 		
-		controlBar = new Rectangle(this.x, this.y, 15, this.height);
+		controlBar = new Rectangle(this.x + this.width / 2, this.y, 15, this.height);
 	}
 	
 	@Override
@@ -61,7 +62,7 @@ public class HangmanValueBar extends UIComponent implements EventListener{
 	
 	public boolean onMouseMoved(MouseMovedEvent e) {
 		if(e.getDragged()) {
-			if(controlBar.intersects(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+			if(controlBar.intersects(Game.mouseRectangle)) {
 				controlBar.x = MouseInput.getX() - controlBar.width / 2;
 				if(controlBar.x < this.x) controlBar.x = this.x;
 				if(controlBar.x > this.x + this.width) controlBar.x = this.x + this.width;

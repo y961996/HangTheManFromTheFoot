@@ -2,7 +2,6 @@ package hangTheManFromTheFoot.scenes;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
@@ -11,7 +10,6 @@ import hangTheManFromTheFoot.events.EventDispatcher;
 import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
-import hangTheManFromTheFoot.input.MouseInput;
 import hangTheManFromTheFoot.main.Game;
 import hangTheManFromTheFoot.particle.MouseParticle;
 import hangTheManFromTheFoot.particle.ParticleController;
@@ -23,9 +21,6 @@ import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
 public class MenuScene extends Scene{
 
-	private int mouseX;
-	private int mouseY;
-	private Rectangle mouseRect;
 	private float alpha = 1.0f;
 	
 	private BufferedImage menuItemBackgroundImage;
@@ -43,8 +38,6 @@ public class MenuScene extends Scene{
 	private HangmanButton exitButton;
 	private HangmanYesNoQuestionBox yesNoBox;
 	
-	//private HangmanYesNoQuestionBox yesNoBox;
-	
 	public MenuScene(Game game, SceneController sceneController) {
 		super(game, sceneController);
 		
@@ -57,8 +50,6 @@ public class MenuScene extends Scene{
 		sparkleAnimation.setFrames(sparkleImages);
 		sparkleAnimation.setDelayBetweenFrames(75);
 			
-		mouseRect = new Rectangle(0, 0, 1, 1);
-		
 		uiManager = new UIManager();
 		
 		playButton = new HangmanButton(0, 100, menuItemBackgroundImage.getWidth() + 50, menuItemBackgroundImage.getHeight(), menuItemBackgroundImage, true);
@@ -70,26 +61,16 @@ public class MenuScene extends Scene{
 		exitButton = new HangmanButton(0, 300, menuItemBackgroundImage.getWidth(), menuItemBackgroundImage.getHeight(), menuItemBackgroundImage, true);
 		exitButton.setButtonText("EXIT");
 		
-		//yesNoBox = new HangmanYesNoQuestionBox(300, 300);
-		
 		uiManager.addComponent(playButton);
 		uiManager.addComponent(optionsButton);
 		uiManager.addComponent(exitButton);
-		//uiManager.addComponent(yesNoBox);
 		
 		particleController = new ParticleController();
 	}
 	
-	private void updateMousePosition() {
-		mouseX = MouseInput.getX();
-		mouseY = MouseInput.getY();
-		mouseRect.x = mouseX;
-		mouseRect.y = mouseY;
-	}
-	
 	private void checkButtonCollision() {
 		// Play Button
-		if(playButton.checkCollision(mouseRect)) {
+		if(playButton.checkCollision(Game.mouseRectangle)) {
 			if(playButton.getWidth() < menuItemBackgroundImage.getWidth() + 100) {
 				playButton.setWidth(playButton.getWidth() + 5);
 				playButton.setTextX(playButton.getWidth() / 2 + 5);
@@ -103,7 +84,7 @@ public class MenuScene extends Scene{
 		}
 				
 		// Options Button
-		if(optionsButton.checkCollision(mouseRect)) {
+		if(optionsButton.checkCollision(Game.mouseRectangle)) {
 			if(optionsButton.getWidth() < menuItemBackgroundImage.getWidth() + 75) {
 				optionsButton.setWidth(optionsButton.getWidth() + 5);
 				optionsButton.setTextX(optionsButton.getWidth() / 2 + 5);
@@ -117,7 +98,7 @@ public class MenuScene extends Scene{
 		}
 				
 		// Exit Button
-		if(exitButton.checkCollision(mouseRect)) {
+		if(exitButton.checkCollision(Game.mouseRectangle)) {
 			if(exitButton.getWidth() < menuItemBackgroundImage.getWidth() + 50) {
 				exitButton.setWidth(exitButton.getWidth() + 5);
 				exitButton.setTextX(exitButton.getWidth() / 2 + 5);
@@ -137,7 +118,6 @@ public class MenuScene extends Scene{
 		
 		sparkleAnimation.update();
 		
-		updateMousePosition();
 		checkButtonCollision();
 		
 		enterFadeInUpdate();
@@ -193,15 +173,27 @@ public class MenuScene extends Scene{
 	}
 
 	public boolean onMousePressed(MousePressedEvent e) {
-		if(playButton.checkCollision(mouseRect)) {
+		if(playButton.checkCollision(Game.mouseRectangle)) {
 			if(e.getButton() == MouseEvent.BUTTON1 && yesNoBox == null) {
 				sceneController.setScene(game.getGameSceneIndex());
 				playButton.setWidth(menuItemBackgroundImage.getWidth() + 50);
+				playButton.setTextX(playButton.getX() + playButton.getWidth() / 2);
+				playButton.setTextY(playButton.getY() + playButton.getHeight() / 2);
 				return true;
 			}
 		}
 
-		if(exitButton.checkCollision(mouseRect)) {
+		if(optionsButton.checkCollision(Game.mouseRectangle)) {
+			if(e.getButton() == MouseEvent.BUTTON1) {
+				sceneController.setScene(game.getOptionsSceneIndex());
+				optionsButton.setWidth(menuItemBackgroundImage.getWidth() + 25);
+				optionsButton.setTextX(optionsButton.getX() + optionsButton.getWidth() / 2);
+				optionsButton.setTextY(optionsButton.getY() + optionsButton.getHeight() / 2);
+				return true;
+			}
+		}
+			
+		if(exitButton.checkCollision(Game.mouseRectangle)) {
 			if(e.getButton() == MouseEvent.BUTTON1 && yesNoBox == null) {
 				yesNoBox = new HangmanYesNoQuestionBox(500, 300);
 				uiManager.addComponent(yesNoBox);

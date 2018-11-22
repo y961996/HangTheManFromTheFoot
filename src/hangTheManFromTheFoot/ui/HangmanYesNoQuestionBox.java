@@ -1,8 +1,9 @@
 package hangTheManFromTheFoot.ui;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import hangTheManFromTheFoot.events.Event;
@@ -11,7 +12,7 @@ import hangTheManFromTheFoot.events.EventListener;
 import hangTheManFromTheFoot.events.eventTypes.MouseMovedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MousePressedEvent;
 import hangTheManFromTheFoot.events.eventTypes.MouseReleasedEvent;
-import hangTheManFromTheFoot.input.MouseInput;
+import hangTheManFromTheFoot.main.Game;
 import hangTheManFromTheFoot.utils.StaticResourceLoader;
 
 public class HangmanYesNoQuestionBox extends UIComponent implements EventListener{
@@ -20,6 +21,8 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 	private int y;
 	private int width = 300;
 	private int height = 75;
+	private int backgroundColorHex;
+	private Color backgroundColor;
 	private boolean yesPressed = false;
 	private boolean noPressed = false;
 	private HangmanButton yesButton;
@@ -44,6 +47,9 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 		uiManager = new UIManager();
 		uiManager.addComponent(yesButton);
 		uiManager.addComponent(noButton);
+		
+		backgroundColorHex = 0x3F546A;
+		backgroundColor = new Color(backgroundColorHex);
 	}
 	
 	@Override
@@ -53,8 +59,12 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 
 	@Override
 	public void render(Graphics g) {
-		g.setColor(Color.CYAN);
+		Graphics2D g2d = (Graphics2D) g;
+		float alpha = 0.5f;
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+		g.setColor(backgroundColor);
 		g.fillRoundRect(this.x, this.y, width, height, 20, 20);
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		uiManager.render(g);
 	}
 
@@ -67,9 +77,9 @@ public class HangmanYesNoQuestionBox extends UIComponent implements EventListene
 	}
 
 	public boolean onMousePressed(MousePressedEvent e) {
-		if(yesButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+		if(yesButton.checkCollision(Game.mouseRectangle)) {
 			yesPressed = true;
-		}else if(noButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+		}else if(noButton.checkCollision(Game.mouseRectangle)) {
 			noPressed = true;
 		}
 		return false;

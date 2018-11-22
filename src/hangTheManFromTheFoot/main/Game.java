@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 
@@ -28,6 +29,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 720;
 	public static final String TITLE = "Hang The Man From The Foot v0.1";
+	
+	public static Rectangle mouseRectangle =  new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1);
 	
 	private boolean running = false;
 	
@@ -68,7 +71,7 @@ public class Game extends Canvas implements Runnable, EventListener{
 		gameSceneIndex = sceneController.getNumberOfScenes();
 		sceneController.addScene(gameScene);
 		
-		sceneController.setScene(optionsSceneIndex);
+		sceneController.setScene(menuSceneIndex);
 		
 		keyboardInput = new KeyboardInput();
 		mouseInput = new MouseInput(this);
@@ -165,7 +168,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 	private void update() {
 		keyboardInput.update();
 		sceneController.update();
-		
+		mouseRectangle.x = MouseInput.getX();
+		mouseRectangle.y = MouseInput.getY();
 	}
 	
 	private void render() {
@@ -206,5 +210,9 @@ public class Game extends Canvas implements Runnable, EventListener{
 	
 	public void setScene(int index) {
 		this.sceneController.setScene(index);
+	}
+	
+	public SoundUtils getMenuSoundUtils() {
+		return this.soundUtils;
 	}
 }

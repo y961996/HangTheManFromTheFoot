@@ -3,7 +3,6 @@ package hangTheManFromTheFoot.scenes;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -306,13 +305,13 @@ public class GameScene extends Scene{
 				checkIfKeyPressed();
 			}
 			if((gameOver || gameFinished) && goToMenuButton != null) {
-				if(goToMenuButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+				if(goToMenuButton.checkCollision(Game.mouseRectangle)) {
 					resetGame();
 					game.setScene(game.getMenuSceneIndex());
 				}
 			}
 			if((gameOver || gameFinished) && playAgainButton != null) {
-				if(playAgainButton.checkCollision(new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1))) {
+				if(playAgainButton.checkCollision(Game.mouseRectangle)) {
 					resetGame();
 				}
 			}
