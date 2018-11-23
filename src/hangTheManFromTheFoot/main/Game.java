@@ -28,7 +28,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 720;
-	public static final String TITLE = "Hang The Man From The Foot v0.1";
+	public static final String TITLE = "Hang The Man From The Foot v1.0";
+	public static final boolean DEBUG = false;
 	
 	public static Rectangle mouseRectangle =  new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1);
 	
@@ -81,7 +82,8 @@ public class Game extends Canvas implements Runnable, EventListener{
 		addMouseMotionListener(mouseInput);
 		
 		soundUtils = new SoundUtils();
-		soundUtils.startMusic("res/images/temp/sound.wav");
+		soundUtils.startMusic("res/sounds/sound.wav");
+		soundUtils.setVolume(0.5f);
 	}
 	
 	private void initWindow() {
@@ -100,7 +102,7 @@ public class Game extends Canvas implements Runnable, EventListener{
 
 	private void initCursor() {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image cursor = toolkit.getImage("res/images/temp/cursor.png");
+		Image cursor = toolkit.getImage("res/images/cursor.png");
 		Point cursorHotSpot = new Point(0, 0);
 		Cursor customCursor = toolkit.createCustomCursor(cursor, cursorHotSpot, "cursor");
 		
@@ -122,6 +124,7 @@ public class Game extends Canvas implements Runnable, EventListener{
 		double ns = 1000000000 / amountOfUpdates;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
+		@SuppressWarnings("unused")
 		int frames = 0;
 		while(running) {
 			long now = System.nanoTime();
@@ -135,7 +138,7 @@ public class Game extends Canvas implements Runnable, EventListener{
 			render();
 			if(System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
-				System.out.println("FPS : " + frames);
+				if(DEBUG) System.out.println("FPS : " + frames);
 				frames = 0;
 			}
 		}

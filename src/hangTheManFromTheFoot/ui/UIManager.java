@@ -3,12 +3,14 @@ package hangTheManFromTheFoot.ui;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import hangTheManFromTheFoot.main.Game;
+
 public class UIManager {
 
 	private ArrayList<UIComponent> components = new ArrayList<>();
 	
 	public void addComponent(UIComponent component) {
-		System.out.println(component + " added.");
+		if(Game.DEBUG) System.out.println(component + " added.");
 		components.add(component);
 	}
 	

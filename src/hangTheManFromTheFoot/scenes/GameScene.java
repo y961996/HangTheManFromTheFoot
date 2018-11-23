@@ -69,7 +69,7 @@ public class GameScene extends Scene{
 		
 		numberAttemptsLeft = 6;
 		words = new HashMap<String, ArrayList<String>>();
-		readFromTextFile("res/words.txt");
+		readFromTextFile("res/words.ent");
 		secretWord = getSecretWord();
 		letterNeedsToBeFound = secretWord.word.length();
 		secretKeyCheck = new boolean[secretWord.word.length()];
@@ -203,7 +203,7 @@ public class GameScene extends Scene{
 		String key = keysArray[randomCategory];
 		int numOfElementsInCategory = words.get(key).size();
 		int randomElement = random.nextInt(numOfElementsInCategory);
-		System.out.println("Secret word has chosen from category: \'" + keysArray[randomCategory] + "\' and it is \"" + words.get(key).get(randomElement) + "\"");
+		if(Game.DEBUG) System.out.println("Secret word has chosen from category: \'" + keysArray[randomCategory] + "\' and it is \"" + words.get(key).get(randomElement) + "\"");
 		return new Word( words.get(key).get(randomElement).toUpperCase(), keysArray[randomCategory]);
 	}
 	

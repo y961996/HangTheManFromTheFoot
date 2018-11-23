@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import hangTheManFromTheFoot.main.Game;
+
 public class ImageUtils {
 
 	private BufferedImage image;
@@ -13,9 +15,9 @@ public class ImageUtils {
 		String[] pathString = path.split("/");
 		try {
 			image = ImageIO.read(getClass().getResource(path));
-			System.out.println(pathString[pathString.length - 1] + " has loaded successfully.");
+			if(Game.DEBUG) System.out.println(pathString[pathString.length - 1] + " has loaded successfully.");
 		} catch (IOException e) {
-			System.err.println("Image: " + pathString[pathString.length - 1] + " from path " + path + " couldn't loaded!");
+			if(Game.DEBUG) System.err.println("Image: " + pathString[pathString.length - 1] + " from path " + path + " couldn't loaded!");
 			e.printStackTrace();
 		}
 		return image;

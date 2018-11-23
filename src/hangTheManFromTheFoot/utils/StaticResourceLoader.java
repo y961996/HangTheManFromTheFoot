@@ -29,12 +29,12 @@ public class StaticResourceLoader {
 	public static BufferedImage optionsBg;
 	
 	static {
-		menuItemBackground = imageUtils.loadImage("/images/temp/MenuItemBackground.png");
-		menuSceneBackground = imageUtils.loadImage("/images/temp/bg/beach.png");
-		hangmanText = imageUtils.loadImage("/images/temp/Hangman.png");
-		sparkleSpriteSheet = imageUtils.loadImage("/images/temp/2d/sparkle effect/sparkle256.png");
-		hangingManSpriteSheet = imageUtils.loadImage("/images/temp/hangingManSpriteSheet.png");
-		windSpriteSheet = imageUtils.loadImage("/images/temp/wind.png");
+		menuItemBackground = imageUtils.loadImage("/images/MenuItemBackground.png");
+		menuSceneBackground = imageUtils.loadImage("/images/bg/beach.png");
+		hangmanText = imageUtils.loadImage("/images/Hangman.png");
+		sparkleSpriteSheet = imageUtils.loadImage("/images/2d/sparkle effect/sparkle256.png");
+		hangingManSpriteSheet = imageUtils.loadImage("/images/hangingManSpriteSheet.png");
+		windSpriteSheet = imageUtils.loadImage("/images/wind.png");
 		
 		sparkleImages = new BufferedImage[9];
 		for(int i = 0; i < 3; i++) {
@@ -58,13 +58,13 @@ public class StaticResourceLoader {
 			}
 		}
 		
-		gameSceneBackground = imageUtils.loadImage("/images/temp/bg/menubg.png");
-		letterPlaceHolder = imageUtils.loadImage("/images/temp/letterPlaceholder.png");
-		keyImage = imageUtils.loadImage("/images/temp/Tuþ.png");
-		keyPressedImage = imageUtils.loadImage("/images/temp/TuþPressed.png");
-		starParticle = imageUtils.loadImage("/images/temp/particles/particleArrow.png");
-		football = imageUtils.loadImage("/images/temp/football.png");
+		gameSceneBackground = imageUtils.loadImage("/images/bg/menubg.png");
+		letterPlaceHolder = imageUtils.loadImage("/images/letterPlaceholder.png");
+		keyImage = imageUtils.loadImage("/images/Tuþ.png");
+		keyPressedImage = imageUtils.loadImage("/images/TuþPressed.png");
+		starParticle = imageUtils.loadImage("/images/particles/particleArrow.png");
+		football = imageUtils.loadImage("/images/football.png");
 		
-		optionsBg = imageUtils.loadImage("/images/temp/bg/optionsBg.jpg");
+		optionsBg = imageUtils.loadImage("/images/bg/optionsBg.jpg");
 	}
 }
